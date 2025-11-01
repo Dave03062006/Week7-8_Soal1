@@ -12,6 +12,8 @@ data class Cuaca (
     val weatherDescription: String = "",
     val weatherIcon: String = "",
     val weatherIconUrl: String = "",
+    val sunrise: String = "",
+    val sunset: String = "",
     val isError: Boolean = false,
     val errorMessage: String = ""
 )

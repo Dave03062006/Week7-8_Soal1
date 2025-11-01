@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import kotlin.text.toInt
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.TimeoutCancellationException
+import kotlin.text.toInt
 
 
 sealed class WeatherUIState {
@@ -27,6 +28,12 @@ class WeatherViewModel : ViewModel() {
     var uiState by mutableStateOf<WeatherUIState>(WeatherUIState.Searching)
         private set
 
+    private fun formatUnixTime(unixTime: Int): String {
+        val date = java.util.Date(unixTime * 1000L)
+        val format = java.text.SimpleDateFormat("hh:mm a", java.util.Locale.ENGLISH)
+        format.timeZone = java.util.TimeZone.getDefault()
+        return format.format(date)
+    }
     fun searchWeather(city: String) {
         if (city.isBlank()) {
             uiState = WeatherUIState.Searching
@@ -62,7 +69,9 @@ class WeatherViewModel : ViewModel() {
                             if (it.isLowerCase()) it.titlecase() else it.toString()
                         } ?: "Unknown",
                         weatherIcon = iconCode,
-                        weatherIconUrl = "https://openweathermap.org/img/wn/$iconCode@2x.png"
+                        weatherIconUrl = "https://openweathermap.org/img/wn/$iconCode@2x.png",
+                        sunrise = formatUnixTime(data.sys.sunrise),
+                        sunset = formatUnixTime(data.sys.sunset)
                     )
 
                     uiState = WeatherUIState.Success(weatherData)

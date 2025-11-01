@@ -26,8 +26,8 @@ import com.example.week78.R
 import com.example.week78.ui.viewModel.WeatherUIState
 import com.example.week78.ui.viewModel.WeatherViewModel
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import com.example.week78.ui.model.Cuaca
-
 
 
 
@@ -195,14 +195,15 @@ class Soal1View {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.LocationOn, null, tint = Color.White)
                 Spacer(modifier = Modifier.width(5.dp))
-                Text("Current Location", color = Color.LightGray, fontSize = 14.sp)
+                Text(weatherData.kota, color = Color.LightGray, fontSize = 14.sp)
             }
 
             Spacer(modifier = Modifier.height(5.dp))
 
             // City Name and Date
             Text(
-                weatherData.kota,
+                java.text.SimpleDateFormat(" MMMM dd", java.util.Locale.getDefault())
+                    .format(java.util.Date()),
                 color = Color.White,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
@@ -210,19 +211,9 @@ class Soal1View {
 
             Spacer(modifier = Modifier.height(5.dp))
 
-            // Current Date
-            Text(
-                java.text.SimpleDateFormat("EEEE, dd MMMM yyyy", java.util.Locale.getDefault())
-                    .format(java.util.Date()),
-                color = Color.LightGray,
-                fontSize = 14.sp
-            )
-
-            Spacer(modifier = Modifier.height(5.dp))
-
             // Last Updated
             Text(
-                "Last updated: ${java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
+                "Updated as of: ${java.text.SimpleDateFormat("HH:mm a", java.util.Locale.getDefault())
                     .format(java.util.Date())}",
                 color = Color.LightGray,
                 fontSize = 12.sp
@@ -243,14 +234,17 @@ class Soal1View {
                     modifier = Modifier.weight(1f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Weather Icon from API
-                    AsyncImage(
-                        model = weatherData.weatherIconUrl,
-                        contentDescription = "Weather Icon",
-                        modifier = Modifier.size(80.dp),
-                        placeholder = painterResource(R.drawable.icon_cloud),
-                        error = painterResource(R.drawable.icon_cloud)
-                    )
+                    // Replace the iconByUrl section with:
+                    weatherData.weatherIconUrl.let { url ->
+                        if (url.isNotEmpty()) {
+                            Image(
+                                painter = rememberAsyncImagePainter(url),
+                                contentDescription = "Weather Icon",
+                                modifier = Modifier.size(64.dp)
+                            )
+                        }
+                    }
+
 
 
                     Spacer(modifier = Modifier.height(10.dp))
@@ -327,7 +321,7 @@ class Soal1View {
                     Image(painter = painterResource(R.drawable.sunrise), contentDescription = null, modifier = Modifier.size(70.dp))
                     Text("SUNRISE", color = Color.LightGray, fontSize = 14.sp)
                     Spacer(modifier = Modifier.height(5.dp))
-                    Text("05:22 AM", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    Text(weatherData.sunrise, color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
                 Spacer(modifier = Modifier.width(24.dp))
                 Column(
@@ -338,7 +332,7 @@ class Soal1View {
                     Image(painter = painterResource(R.drawable.sunset), contentDescription = null, modifier = Modifier.size(70.dp))
                     Text("SUNSET", color = Color.LightGray, fontSize = 14.sp)
                     Spacer(modifier = Modifier.height(5.dp))
-                    Text("05:29 PM", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    Text(weatherData.sunset, color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
             }
         }
